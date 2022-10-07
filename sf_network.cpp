@@ -15,24 +15,16 @@
 #include <set>
 #include <iterator>
 //----
-//#include "gnuplot.h"
 
 using namespace std;
 
 #define TAU 6.283185307
 
-// g++ adj_list44_novisitados.cpp -o sfn2 -std=c++2a
-
-float beta;
-int betastr;
+// g++ sf_network.cpp -o sfn -std=c++2a
 
 class Edge;
 class Node;
-void tostr(float);
 
-//OJO que X e Y deben ser la longitud del edge, no?
-//podrias definir el vector distancia r
-//no se si nos interesan las distancias aqui.!!!!!!!
 class Edge
 {
 	public:
@@ -69,9 +61,6 @@ class Edge
 		}
 		*/
 };
-
-//CAPAZ PONER EL STATUS AQUI EN Node???
-//SI, EL STATUS ES DE LOS NODOS O NodeA, NO DEL EDGE.
 
 class Node {
 
@@ -155,7 +144,6 @@ class Graph{
 	vector<Node> nodes;
 
 public:
-	//vector<Node> nodes;
 
 	void addNode(Node newNode){
 		bool check = checkIfNodeExistsByID(newNode.getID());
@@ -206,15 +194,6 @@ public:
             			CurrentEdgeNumber = nodes.at(i).edgeList.size();
             			nodes.at(toNode).edgeList.push_back(e2);
           			} 
-          			/*
-          			else if (nodes.at(i).getID() == toNode) {
-          				cout << "node == to... ojo aqui " << "from: " << fromNode << "... to: " << toNode << endl;
-            			Edge e(toNode); //Edge e(toNode, weight);
-		            	//edgeList.push_back(e); 
-		            	//nodes.at(i).addEdgeToEdgelist(fromNode,weight);
-		            	nodes.at(i).edgeList.push_back(e);
-            		}
-            		*/
         		}
         		//cout << "Edge between " << fromNode << " and " << toNode << " added Successfully" << endl;
         	}
@@ -267,7 +246,6 @@ public:
     	return flag;
   	}
 
-
 	Node getNodeByID(int vid) {
 		Node temp;
 		for (int i = 0; i < nodes.size(); i++) {
@@ -293,139 +271,30 @@ public:
 	}
 
 	void printGraph() {
-	    for (int i = 0; i < nodes.size(); i++) {
-		    Node temp;
-		    temp = nodes.at(i);
-		    //cout << nodes.size();
-		    //cout << temp << endl;
-		    cout << " (" << temp.getID() << ") --> ";
-		    temp.printEdgeList();
-		    temp.printNumberEdges();
-		    /*
-		    cout << "[";
-    	for (auto it = edgeList.begin(); it != edgeList.end(); it++) {
-      		cout << it -> getDestinationID() << " --> ";
-    	}
-    	cout << "]";
-    	cout << endl;
-
-    void showlist() //(list<int> g)
-	{
-    	list<int>::iterator it;
-
-    	for (auto it = edgeList.begin(); it != edgeList.end(); ++it)
-        	cout << '\t' << *it;
-
-    	cout << '\n';
-	}
-    	*/
-	    }
-    }
-
-	//
-	/*
-	void updateEdgeByID(int fromVertex, int toVertex, int newWeight) {
-    bool check = checkIfEdgeExistsByID(fromVertex, toVertex);
-    if (check == true) {
-      for (int i = 0; i < vertices.size(); i++) {
-
-        if (vertices.at(i).getStateID() == fromVertex) {
-          for (auto it = vertices.at(i).edgeList.begin(); it != vertices.at(i).edgeList.end(); it++) {
-            if (it -> getDestinationVertexID() == toVertex) {
-              it -> setWeight(newWeight);
-              break;
-            }
-
-          }
-
-        } else if (vertices.at(i).getStateID() == toVertex) {
-          for (auto it = vertices.at(i).edgeList.begin(); it != vertices.at(i).edgeList.end(); it++) {
-            if (it -> getDestinationVertexID() == fromVertex) {
-              it -> setWeight(newWeight);
-              break;
-            }
-
-          }
-        }
-      }
-      cout << "Edge Weight Updated Successfully " << endl;
-    } else {
-      cout << "Edge between " << getVertexByID(fromVertex).getStateName() << "(" << fromVertex << ") and " << getVertexByID(toVertex).getStateName() << "(" << toVertex << ") DOES NOT Exist" << endl;
-    }
+	  for (int i = 0; i < nodes.size(); i++) {
+		  Node temp;
+		  temp = nodes.at(i);
+      //cout << nodes.size();
+		  //cout << temp << endl;
+		  cout << " (" << temp.getID() << ") --> ";
+		  temp.printEdgeList();
+		  temp.printNumberEdges();
+	  }
   }
-*/
-
 };
 
-/*
-The Algorithm:
-Input: Number of Nodes N; 
-       Initial number of nodes m0; 
-       Offset Exponent a; 
-       Minimum degree 1 <= d <= m0.
-Output: scale-free multigraph G = ({0,....,N-1}, E).
-
-1) Add m0 nodes to G.
-2) Connect every node in G to every other node in G, i.e. create a complete graph. ----- HASTA AQUI adj_list1.cpp
-3) Create a new node i.
-4) Pick a node j uniformly at random from the graph G. Set P = (k(j)/k_tot)^a.
-5) Pick a real number R uniformly at random between 0 and 1.
-6) If P > R then add j to i's adjacency list.
-7) Repeat steps 4 - 6 until i has m nodes in its adjacency list.
-8) Add i to the adjacency list of each node in its adjacency list.
-9) Add i to to the graph.
-10) Repeat steps 3 - 9 until there are N nodes in the graph.
-*/
 
 int main(){
 
 	Graph g;
 	srand(time(0));
 
-	ifstream fileIn; //input-stream variable
-	//ofstream output_file;
-	
-	
-	int n_S=0,n_I=0,n_D=0;//number of total S,I,D.
-	int status_for_switch, node_identifier;
-	float angle, t=0,dt,flag, vel;
-	int tf, radius, n, BoxX, BoxY, num_sim;
-	float beta;
-	int ni = 4, nf = 100;
-	//Person P[2*n], tmp[2*n];
-
-	//cout << "Write the name of the file you want to open: ";
-	//cin >> inputfilename;
-
-	fileIn.open("datin.txt");
-	if(!fileIn)
-	{
-		cout << "Couldn't find the input file" << endl;
-		exit(-1);
-	}
-
-	fileIn >> num_sim >> beta >> n >> BoxX >> BoxY >> tf >> dt >> radius;
-
-	fileIn.close();
-
-	cout << "simulaciones: " << num_sim << ", "
-		<< "beta: " << beta << ", "
-		<< "N: " << n << ", "
-		<< "BoxX: " << BoxX << ", "
-		<< "BoxY: " << BoxY << ", "
-		<< "tf: " << tf << ", "
-		<< "dt: " << dt << ", "
-		<< "radius: " << radius << ", " << endl;
-
-	tostr(beta);
-
+	int ni = 4, nf = 5000; //ni is the initial nodes that need to be connected. nf is the final total nodes (from 0 to 100).
 	int simulations = 1;
 	int sim_number;
 
 	for (sim_number = 0; sim_number < simulations; sim_number++)
 	{	
-		//cout < sim_number < endl;
-		
 		g.clearGraph();
 
 	// Initial nodes
@@ -451,9 +320,6 @@ int main(){
 
 		}
 
-		//g.printGraph();
-
-
 	// Add a new node
 		int contador = 0;
 		int new_nodes = ni;
@@ -462,6 +328,7 @@ int main(){
 
 		while(contador != nf)
 		{
+			cout << contador << endl;
 			// Add a new node
 			Node v;
 			v.setID(new_nodes);
@@ -480,32 +347,18 @@ int main(){
 				sum_ki += g.NumberOfEdgesByNode(i); 
 			}
 
-			//set <int> visitados;
 			double Pk = 0;
 			float dice = 0;
 			int conections_per_new_node = 0;
-			// Pick a random node, check the prob to connect and throw a random number, if its greater than the prob, connect it.
-			/*do{
-				random_node = rand() % new_nodes;
-				Pk = pow((g.DegreeOfNodeToAttach(random_node)/sum_ki),1.22); //why 1.22?
-				cout << "Pk: " << Pk << endl;
-				dice = (float)rand()/RAND_MAX;
-				//cout << dice << endl;
-				if (Pk > dice)
-				{
-					g.addEdgeByID(new_nodes,random_node);
-					conections_per_new_node++;
-				}
-					
-			}while(conections_per_new_node < kj);
-			*/
+
+			// Pick a random node, check the prob to connect and throw a random number, if its lower than the prob, connect it.
 			while(conections_per_new_node < kj)
 			{
 				random_node = rand() % new_nodes;
-				Pk = pow((g.DegreeOfNodeToAttach(random_node)/sum_ki),1.22); //why 1.22?
-				cout << "Pk: " << Pk << endl;
+				Pk = pow((g.DegreeOfNodeToAttach(random_node)/sum_ki),1.22); //why 1.22? Prob that the new node connects to selected node.
+				
 				dice = (float)rand()/RAND_MAX;
-				//cout << dice << endl;
+				
 				if (Pk > dice && g.checkIfEdgeExistsByID(new_nodes,random_node)==false)
 				{
 					g.addEdgeByID(new_nodes,random_node);
@@ -518,9 +371,11 @@ int main(){
 		g.printGraph();
 
 		// This section is designed to plot the characteristic curve of the SF network.
+		//----------------------------------------------------------------------------------------------------------------
 		int ListNumberOfEdges[nf+1];
 		int FreqDist[nf+1];
 
+		// We need to initialize the array to avoid getting random elements from accupied memory spaces.
 		for (int i = 0; i < nf+2; ++i)
 		{
 			FreqDist[i] = 0;
@@ -529,33 +384,25 @@ int main(){
 		for (int i = 0; i < nf+1; ++i)
 		{
 			ListNumberOfEdges[i] = g.NumberOfEdgesByNode(i); // Node "i" has "g.NumberOfEdgesByNode(i)" Edges.
-			//cout << ListNumberOfEdges[i] << endl;
 			FreqDist[ListNumberOfEdges[i]]++; //Now ListNumberOfEdges[i] is the index of the FreqDist array and we add one to that index every time we find it.
-			//cout << FreqDist[ListNumberOfEdges[i]] << endl;
 		}
 		// Printing section
 		//--------------------------------
 		std::string output = "sf2_network_" + std::to_string(sim_number);
 		std::ofstream sf(output);
 
-		//output_file.open("sf_network");
-
 		for (int i = 0; i < nf+1; ++i)
 		{
-			if (i >= 0)
+			if (i >= kj)
 			{
 
 				sf << i << " " << FreqDist[i] << endl;
 			}
 		}
-
-		//output_file.close();
 		//--------------------------------
+		//----------------------------------------------------------------------------------------------------------------
+		
 		sf.close();
 	}
 	return 0;
 }//end
-
-void tostr(float beta){
-	betastr = int(beta*10);
-}
