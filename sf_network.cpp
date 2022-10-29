@@ -289,7 +289,7 @@ int main(){
 	Graph g;
 	srand(time(0));
 
-	int ni = 4, nf = 5000; //ni is the initial nodes that need to be connected. nf is the final total nodes (from 0 to 100).
+	 //ni is the initial nodes that need to be connected. N is the final total nodes (from 0 to 100).
 	int simulations = 1;
 	int sim_number;
 
@@ -297,65 +297,63 @@ int main(){
 	{	
 		g.clearGraph();
 
-	// Initial nodes
-		for (int i = 0; i < ni; ++i)
+		int contador = 0;
+		int sum_ki; 
+		int m = 5; // ki -> degree of old nodes... m -> degree of new node.
+		int m0 = m+1, N = 10000;
+		int new_nodes = m0;
+		int random_node=0;
+		double Pk = 0;
+		float dice = 0;
+
+		// Initial nodes
+		for (int i = 0; i < m0; ++i)
 		{
 			Node v;
 			v.setID(i);
 			g.addNode(v);
 		}
-
-	// Now we need to connect them somehow.
-		for (int i = 0; i < ni; ++i)
+	
+		// Now we need to connect them somehow. This is fully connected.
+		for (int i = 0; i < m0; ++i)
 		{
-			for (int j = 0; j < ni; ++j)
+			for (int j = 0; j < m0; ++j)
 			{
 				if (i != j)
 				{
 					g.addEdgeByID(i,j); //(from, to)
 				}
 			}
-
 			//cout << "NumberOfEdgesByNode: " << g.NumberOfEdgesByNode(i) << endl;
-
 		}
+		g.printGraph();
 
-	// Add a new node
-		int contador = 0;
-		int new_nodes = ni;
-		int sum_ki, kj = 3; // ki -> degree of old nodes... kj -> degree of new node.
-		int random_node=0;
-
-		while(contador != nf)
+		// Add a new node
+		while(contador != N)
 		{
-			cout << contador << endl;
+			cout << contador << " ";
 			// Add a new node
 			Node v;
 			v.setID(new_nodes);
 			g.addNode(v);
 			//---------------
 
-			// busca la probabilidad de cada nodo existente y los 3 mayores se acoplan.
 			// I am wondering: does a power law distribution already implies that there are hubs in the network?
-			// Degree k is the number of Edges P(i,j) = kj/SUM(ki)
-			//Hacer funcion que calcule la probabilidad de cada nodo!
 			
 			// Sum the edges of all existing nodes.
 			sum_ki = 0;
 			for (int i = 0; i < new_nodes; ++i)
 			{
-				sum_ki += g.NumberOfEdgesByNode(i); 
+				sum_ki += g.NumberOfEdgesByNode(i); //sum_ki is twice the total edges.
 			}
 
-			double Pk = 0;
-			float dice = 0;
 			int conections_per_new_node = 0;
 
 			// Pick a random node, check the prob to connect and throw a random number, if its lower than the prob, connect it.
-			while(conections_per_new_node < kj)
+			while(conections_per_new_node < m)
 			{
 				random_node = rand() % new_nodes;
-				Pk = pow((g.DegreeOfNodeToAttach(random_node)/sum_ki),1.22); //why 1.22? Prob that the new node connects to selected node.
+				Pk = pow((g.DegreeOfNodeToAttach(random_node)/sum_ki),1); //why 1.22? Prob that the new node connects to selected node.
 				
 				dice = (float)rand()/RAND_MAX;
 				
@@ -372,16 +370,16 @@ int main(){
 
 		// This section is designed to plot the characteristic curve of the SF network.
 		//----------------------------------------------------------------------------------------------------------------
-		int ListNumberOfEdges[nf+1];
-		int FreqDist[nf+1];
+		int ListNumberOfEdges[N+1];
+		int FreqDist[N+1];
 
 		// We need to initialize the array to avoid getting random elements from accupied memory spaces.
-		for (int i = 0; i < nf+2; ++i)
+		for (int i = 0; i < N+2; ++i)
 		{
 			FreqDist[i] = 0;
 		}
 
-		for (int i = 0; i < nf+1; ++i)
+		for (int i = 0; i < N+1; ++i)
 		{
 			ListNumberOfEdges[i] = g.NumberOfEdgesByNode(i); // Node "i" has "g.NumberOfEdgesByNode(i)" Edges.
 			FreqDist[ListNumberOfEdges[i]]++; //Now ListNumberOfEdges[i] is the index of the FreqDist array and we add one to that index every time we find it.
@@ -391,9 +389,9 @@ int main(){
 		std::string output = "sf2_network_" + std::to_string(sim_number);
 		std::ofstream sf(output);
 
-		for (int i = 0; i < nf+1; ++i)
+		for (int i = 0; i < N+1; ++i)
 		{
-			if (i >= kj)
+			if (i >= m)
 			{
 
 				sf << i << " " << FreqDist[i] << endl;
