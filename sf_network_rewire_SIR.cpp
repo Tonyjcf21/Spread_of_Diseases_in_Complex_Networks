@@ -457,7 +457,8 @@ int main(){
 	}
 
 	int t = 0, tf = 1;
-	
+	float odds, beta = 0.6;
+	list<int> infecteds;
 
 	while(t<tf){
 
@@ -467,8 +468,21 @@ int main(){
 		// Ahora chequea sus conexiones e intenta infectarlas con una probabilidad! Luego, cura al nodo inicial.
 		int* Connections = g.EdgesOfNode(random_infection);
 
-		cout << random_infection << endl;
-		cout << Connections[0] << " " << Connections[1] << endl;
+		//Hace falta como un while por aqui en algun lado.
+
+		for (int i = 0; i < g.NumberOfEdgesByNode(random_infection); ++i)
+		{
+			odds = (float)rand()/RAND_MAX;
+			if (odds < beta)
+			{
+				g.NodeInfection(Connections[i]);
+				infecteds.push_back(Connections[i]);
+			}
+		}
+
+
+
+		
 
 
 
