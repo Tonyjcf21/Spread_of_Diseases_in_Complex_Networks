@@ -265,6 +265,13 @@ public:
     	temp.setStatus(1);
     }
 
+    void NodeRecovery(int node)
+    {
+    	Node temp;
+    	temp = nodes.at(node);
+    	temp.setStatus(0);
+    }
+
     int* EdgesOfNode(int node){
     	Node v = getNodeByID(node);
     	list < Edge > e;
@@ -460,37 +467,64 @@ int main(){
 	float odds, beta = 0.6;
 	list<int> infecteds;
 
+
+	// Initializing the disease.
+	int random_infection = rand() % N;
+	g.NodeInfection(random_infection);
+
+	// Finding the edges of the infected node.
+	int* Connections = g.EdgesOfNode(random_infection);
+
+	// Infecting the neighbours of the infected node with a probability.
+	for (int i = 0; i < g.NumberOfEdgesByNode(random_infection); ++i)
+	{
+		odds = (float)rand()/RAND_MAX;
+		if (odds < beta)
+		{
+			g.NodeInfection(Connections[i]);
+			infecteds.push_back(Connections[i]);
+		}
+	}
+
+	// The initial infection is recovered.
+	g.NodeRecovery(random_infection);
+
+	// Remove data from the dynamic array.
+	delete[] Connections;
+
+	//Now that we have a list of infecteds (Hopefully), we get the loops running.
+
 	while(t<tf){
 
-		int random_infection = rand() % N;
-		g.NodeInfection(random_infection);
+		list<int> new_infecteds;
+		int count = 0;
 
-		// Ahora chequea sus conexiones e intenta infectarlas con una probabilidad! Luego, cura al nodo inicial.
-		int* Connections = g.EdgesOfNode(random_infection);
-
-		//Hace falta como un while por aqui en algun lado.
-
-		for (int i = 0; i < g.NumberOfEdgesByNode(random_infection); ++i)
+		for (auto it = infecteds.begin(); it != infecteds.end(); it++)
 		{
-			odds = (float)rand()/RAND_MAX;
-			if (odds < beta)
+			int* Connections = g.EdgesOfNode(it)
+
+			for (int j = 0; j < g.NumberOfEdgesByNode(Connections[count]); ++j)
 			{
-				g.NodeInfection(Connections[i]);
-				infecteds.push_back(Connections[i]);
+				odds = (float)rand()/RAND_MAX;
+				if (odds < beta)
+				{
+					g.NodeInfection(Connections[j]);
+					new_infecteds.push_back(Connections[j]);
+				}
 			}
+			count++;
+		}
+
+		// I NEED TO WORK OUT SOMETHING ABOUT INFECTEDS AND NEW_INFECTEDS. NEED TO CLEAR INFECTEDS BUT ALSO NEED IT TO ITERATE.
+
+		//Now the initial infection is recovered.
+		for (int i = 0; i < infecteds.size(); ++i)
+		{
+			g.NodeRecovery(random_infection);
 		}
 
 
-
-		
-
-
-
-
-
-
 		t++;
-		delete[] Connections;
 	}
 
 	return 0;
