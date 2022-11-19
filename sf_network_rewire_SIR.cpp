@@ -502,15 +502,16 @@ int main(){
 	delete[] Connections;
 
 	//Now that we have a list of infecteds (Hopefully), we get the loops running.
-	while(t<tf){
-
-		list<int> new_infecteds;
+	while(t<tf)
+	{
 		int count = 0;
 
 		for (auto it = infecteds.begin(); it != infecteds.end(); it++)
 		{
-			int specific_node = *(it);
+			// This will be the infected node that is spreading the disease among its edges.
+			int specific_node = *(it); //list iterator to int conversion.
 			int* Connections = g.EdgesOfNode(specific_node);
+
 			cout << "trying a print here..." << endl;
 			cout << specific_node << " " << Connections[0] << " " <<Connections[1] << endl;
 
@@ -521,23 +522,12 @@ int main(){
 				{
 					g.NodeInfection(Connections[j]);
 					infecteds.push_back(Connections[j]);
-					//new_infecteds.push_back(Connections[j]);
 				}
 			}
-
 			count++;
+			g.NodeRecovery(specific_node);
 			delete[] Connections;
 		}
-
-		// I NEED TO WORK OUT SOMETHING ABOUT INFECTEDS AND NEW_INFECTEDS. NEED TO CLEAR INFECTEDS BUT ALSO NEED IT TO ITERATE.
-
-		//Now the initial infection is recovered.
-		for (int i = 0; i < infecteds.size(); ++i)
-		{
-			g.NodeRecovery(random_infection);
-		}
-
-
 		t++;
 	}
 
