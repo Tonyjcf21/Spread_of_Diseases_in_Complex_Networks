@@ -286,6 +286,15 @@ public:
 
     	return arr;
     }
+
+/*
+    int NodeNumber(int node)
+    {
+    	Node temp;
+    	temp = nodes.at(node);
+    	return temp;
+    }
+    */
 };
 
 
@@ -493,7 +502,6 @@ int main(){
 	delete[] Connections;
 
 	//Now that we have a list of infecteds (Hopefully), we get the loops running.
-
 	while(t<tf){
 
 		list<int> new_infecteds;
@@ -501,7 +509,10 @@ int main(){
 
 		for (auto it = infecteds.begin(); it != infecteds.end(); it++)
 		{
-			int* Connections = g.EdgesOfNode(it)
+			int specific_node = *(it);
+			int* Connections = g.EdgesOfNode(specific_node);
+			cout << "trying a print here..." << endl;
+			cout << specific_node << " " << Connections[0] << " " <<Connections[1] << endl;
 
 			for (int j = 0; j < g.NumberOfEdgesByNode(Connections[count]); ++j)
 			{
@@ -509,10 +520,13 @@ int main(){
 				if (odds < beta)
 				{
 					g.NodeInfection(Connections[j]);
-					new_infecteds.push_back(Connections[j]);
+					infecteds.push_back(Connections[j]);
+					//new_infecteds.push_back(Connections[j]);
 				}
 			}
+
 			count++;
+			delete[] Connections;
 		}
 
 		// I NEED TO WORK OUT SOMETHING ABOUT INFECTEDS AND NEW_INFECTEDS. NEED TO CLEAR INFECTEDS BUT ALSO NEED IT TO ITERATE.
