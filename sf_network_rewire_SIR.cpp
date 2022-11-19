@@ -509,24 +509,25 @@ int main(){
 		for (auto it = infecteds.begin(); it != infecteds.end(); it++)
 		{
 			// This will be the infected node that is spreading the disease among its edges.
-			int specific_node = *(it); //list iterator to int conversion.
-			int* Connections = g.EdgesOfNode(specific_node);
+			int specific_node = *(it); // list iterator to int conversion.
+			int* Connections = g.EdgesOfNode(specific_node); // Saving the edges from this node (specific_node).
 
 			cout << "trying a print here..." << endl;
 			cout << specific_node << " " << Connections[0] << " " <<Connections[1] << endl;
 
+			// Infecting nodes connected to specific_node with a certain probability.
 			for (int j = 0; j < g.NumberOfEdgesByNode(Connections[count]); ++j)
 			{
 				odds = (float)rand()/RAND_MAX;
 				if (odds < beta)
 				{
-					g.NodeInfection(Connections[j]);
-					infecteds.push_back(Connections[j]);
+					g.NodeInfection(Connections[j]); // Infecting the node.
+					infecteds.push_back(Connections[j]); // Adding the node to the infected list.
 				}
 			}
 			count++;
-			g.NodeRecovery(specific_node);
-			delete[] Connections;
+			g.NodeRecovery(specific_node); // Now that this node has infected some of its neighbours. It has recovered.
+			delete[] Connections; // Cleaning the edge list of this node so we can put the list of the next node.
 		}
 		t++;
 	}
